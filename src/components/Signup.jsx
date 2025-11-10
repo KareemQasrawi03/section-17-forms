@@ -1,4 +1,8 @@
+import { useState } from "react";
+import Input from "./Input";
+
 export default function Signup() {
+  const [passwordsAreNotEqual, setPasswordAreNotEqule] = useState(false);
   function handleSubmit(event) {
     event.preventDefault();
     const fd = new FormData(event.target);
@@ -7,8 +11,13 @@ export default function Signup() {
     const acquisitionChannel = fd.getAll("acquisition");
     const data = Object.fromEntries(fd.entries());
     data.acquisition = acquisitionChannel;
+    if (data.password !== data["confirm-password"]) {
+      setPasswordAreNotEqule(true);
+      return;
+    }
+
     console.log("data", data);
-    event.target.reset()
+    event.target.reset();
   }
   return (
     <form onSubmit={handleSubmit}>
@@ -16,43 +25,61 @@ export default function Signup() {
       <p>We just need a little bit of data from you to get you started 🚀</p>
 
       <div className="control">
-        <label htmlFor="email">Email</label>
-        <input id="email" type="email" name="email" />
+        <Input label="Email" type="email" name="email" id="email" required />
       </div>
 
       <div className="control-row">
         <div className="control">
-          <label htmlFor="password">Password</label>
-          <input id="password" type="password" name="password" />
+          <Input
+            label="Password"
+            id="password"
+            type="password"
+            name="password"
+            required
+            minLength={6}
+          />
         </div>
 
         <div className="control">
-          <label htmlFor="confirm-password">Confirm Password</label>
-          <input
+          <Input
+            label="Confirm Password"
             id="confirm-password"
             type="password"
             name="confirm-password"
+            required
+            minLength={6}
           />
         </div>
       </div>
+      {passwordsAreNotEqual && <p>not Match password</p>}
 
       <hr />
 
       <div className="control-row">
         <div className="control">
-          <label htmlFor="first-name">First Name</label>
-          <input type="text" id="first-name" name="first-name" />
+          <Input
+            label="First Name"
+            type="text"
+            id="first-name"
+            name="first-name"
+            required
+          />
         </div>
 
         <div className="control">
-          <label htmlFor="last-name">Last Name</label>
-          <input type="text" id="last-name" name="last-name" />
+          <Input
+            label="Last Name"
+            type="text"
+            id="last-name"
+            name="last-name"
+            required
+          />
         </div>
       </div>
 
       <div className="control">
         <label htmlFor="phone">What best describes your role?</label>
-        <select id="role" name="role">
+        <select id="role" name="role" required>
           <option value="student">Student</option>
           <option value="teacher">Teacher</option>
           <option value="employee">Employee</option>
@@ -64,28 +91,33 @@ export default function Signup() {
       <fieldset>
         <legend>How did you find us?</legend>
         <div className="control">
-          <input
+          <Input
+            label="Google"
             type="checkbox"
             id="google"
             name="acquisition"
             value="google"
           />
-          <label htmlFor="google">Google</label>
         </div>
 
         <div className="control">
-          <input
+          <Input
+            label="Referred by friend"
             type="checkbox"
             id="friend"
             name="acquisition"
             value="friend"
           />
-          <label htmlFor="friend">Referred by friend</label>
         </div>
 
         <div className="control">
-          <input type="checkbox" id="other" name="acquisition" value="other" />
-          <label htmlFor="other">Other</label>
+          <Input
+            label="Other"
+            type="checkbox"
+            id="other"
+            name="acquisition"
+            value="other"
+          />
         </div>
       </fieldset>
 
